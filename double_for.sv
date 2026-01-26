@@ -1,4 +1,4 @@
-// ?
+// may cause completing on `i`, but shouldn't be recognized as loops
 
 module double_for #(
     DW = 8
@@ -11,13 +11,13 @@ module double_for #(
 
   integer i;
 
-  always_comb begin
+  always @(*) begin
     for (i = 0; i < DW; i = i + 1) begin
       out0[i] = ~in0[i];
     end
   end
 
-  always_comb begin
+  always @(*) begin
     for (i = 0; i < DW; i = i + 1) begin
       out1[i] = ~in1[i];
     end
