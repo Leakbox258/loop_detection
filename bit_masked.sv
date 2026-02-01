@@ -1,6 +1,6 @@
 // false-positive
 
-module generate_loop #(
+module bit_masked #(
     parameter         [7:0] POL_MASK = 8'hC0,
     parameter integer       POL_W    = 7,
     parameter integer       DW       = 16
