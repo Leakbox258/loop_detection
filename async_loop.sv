@@ -1,41 +1,24 @@
-module top (
-    input clk
-);
-  wire i_rst;
-  wire [3:0] count;
-
-  counter counter (
-      clk,
-      i_rst,
-      count
-  );
-  reset reset (
-      count,
-      i_rst
-  );
-endmodule
-
-module counter (
+module async_loop (
     input clk,
     input i_rst,
     output [3:0] cnt
 );
+    reg [3:0] count;
+    wire inter_rst;
+    wire total_rst;
 
-  reg [3:0] count;
-  always @(posedge clk or posedge i_rst) begin  //warning on "count->i_rst->count"
-    if (i_rst) count <= 0;
-    else count <= count + 1;
-  end
+    assign inter_rst = (count == 4'd10);
+    assign total_rst = i_rst | inter_rst;
 
-  assign cnt = count;
-endmodule
+    // count -> inter_rst -> total_rst -> total_rst -> count
+    always @(posedge clk or posedge total_rst) begin
+        if (total_rst) begin
+            count <= 4'b0000;
+        end else begin
+            count <= count + 1'b1;
+        end
+    end
 
-module reset (
-    input [3:0] count,
-    output reg i_rst
-);
-  parameter number = 10;
-  always @(count)
-    if (count == number) i_rst = 1;
-    else i_rst = 0;
+    assign cnt = count;
+
 endmodule
